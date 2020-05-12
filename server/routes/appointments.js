@@ -27,6 +27,13 @@ router.post('/',
         const { client, doctor, time, date } = req.body;
         
         try {
+            const appointment = await AppointmentModel.find({ time, date });
+            if(appointment) {
+                return res.status(400).json({
+                    message: 'This appointment already exists!'
+                });
+            }
+
             const clientUser = await UserModel.findById(client);
             if(!clientUser) {
                 return res.status(404).json({
