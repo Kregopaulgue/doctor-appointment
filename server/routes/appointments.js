@@ -67,13 +67,12 @@ router.post('/',
             date += ` ${hours}:${minutes}`;
 
             const appointmentDate = new Date(date);
-            const formattedDate = new Date(appointmentDate.toISOString() + 'Z');
 
             const newAppointment = new AppointmentModel({
                 client: clientUser._id,
                 doctor: doctorUser._id,
                 time: timeEntry._id,
-                date: formattedDate
+                date: appointmentDate
             });
             await newAppointment.save();
 
@@ -93,7 +92,7 @@ router.put('/:appointmentId',
         check('client').not().isEmpty(),
         check('doctor').not().isEmpty(),
         check('time').not().isEmpty(),
-        check('date').notEmpty().isISO8601().toDate()
+        check('date').notEmpty()
     ],
     async (req, res) => {
         const validationErrors = validationResult(req);
@@ -201,22 +200,11 @@ router.get('',
 );
 
 router.get('/search',
-    [
-        query('fromDate').isISO8601().toDate(),
-        query('toDate').isISO8601().toDate()
-    ],
     async (req, res) => {
-        const validationErrors = validationResult(req);
-        if(!validationErrors.isEmpty()) {
-            return res.status(400).json({
-                errors: validationErrors
-            });
-        }
-
         try {
             const allowedParams = ['fromDate', 'toDate', 'client', 'doctor', 'time'];
 
-            const actualParams = Object.keys(allowedParams);
+            const actualParams = Object.keys(req.query);
             const invalidParam = actualParams.find(param => {
                 return allowedParams.indexOf(param) === -1;
             });
@@ -226,12 +214,27 @@ router.get('/search',
                 });
             }
 
-            const filteredAppointments = await AppointmentModel.find({
-                client,
-                doctor,
-                time,
-                date: { $gte: new Date(fromDate), $lte: new Date(toDate) }, 
-            });
+            const { fromDate, toDate, client, doctor, time } = req.query;
+            const searchObject = {};
+            if(fromDate && toDate) {
+                searchObject.date = { $gte: new Date(fromDate), $lte: new Date(toDate) };
+            } else if(fromDate) {
+                searchObject.date = { $gte: new Date(fromDate) };
+            } else if(toDate) {
+                searchObject.date = { $lte: new Date(toDate) };
+            }
+
+            if(client) {
+                searchObject.client = client;
+            }
+            if(doctor) {
+                searchObject.doctor = doctor;
+            }
+            if(time) {
+                searchObject.time = time;
+            }
+
+            const filteredAppointments = await AppointmentModel.find(searchObject);
 
             const payload = {
                 appointments: filteredAppointments
