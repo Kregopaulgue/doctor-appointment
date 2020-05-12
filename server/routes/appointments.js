@@ -1,5 +1,5 @@
 const express = require('express');
-const { check, validationResult } = require('express-validator');
+const { check, query, validationResult } = require('express-validator');
 
 const router = express.Router();
 
@@ -24,10 +24,10 @@ router.post('/',
             });
         }
 
-        const { client, doctor, time, date } = req.body;
+        let { client, doctor, time, date } = req.body;
         
         try {
-            const appointment = await AppointmentModel.find({ time, date });
+            const appointment = await AppointmentModel.findOne({ time, date });
             if(appointment) {
                 return res.status(400).json({
                     message: 'This appointment already exists!'
@@ -61,11 +61,19 @@ router.post('/',
                 });
             }
 
+            let [ hours, minutes ] = timeEntry.time.split(':');
+            hours = parseInt(hours, 10);
+            minutes = parseInt(minutes, 10);
+            date += ` ${hours}:${minutes}`;
+
+            const appointmentDate = new Date(date);
+            const formattedDate = new Date(appointmentDate.toISOString() + 'Z');
+
             const newAppointment = new AppointmentModel({
                 client: clientUser._id,
                 doctor: doctorUser._id,
                 time: timeEntry._id,
-                date: new Date(date)
+                date: formattedDate
             });
             await newAppointment.save();
 
@@ -104,10 +112,45 @@ router.put('/:appointmentId',
                 });
             }
 
+            const clientUser = await UserModel.findById(client);
+            if(!clientUser) {
+                return res.status(404).json({
+                    message: 'Client with that id is not found!'
+                });
+            }
+
+            const doctorUser = await UserModel.findById(doctor);
+            if(!doctorUser) {
+                return res.status(404).json({
+                    message: 'User with that id is not found!'
+                });
+            }
+            const doctorProfile = await DoctorModel.find({ user: doctorUser._id });
+            if(!doctorProfile) {
+                return res.status(404).json({
+                    message: 'Doctor profile for that user is not found!'
+                });
+            }
+
+            const timeEntry = await TimeModel.findById(time);
+            if(!timeEntry) {
+                return res.status(404).json({
+                    message: 'Time with that id doesn\'t exist'
+                });
+            }
+
+            let [ hours, minutes ] = timeEntry.split(':');
+            hours = parseInt(hour, 10);
+            minutes = parseInt(minutes, 10);
+
+            const updatedAppointmentDate = new Date(date);
+            updatedAppointmentDate.setHours(hours);
+            updatedAppointmentDate.setMinutes(minutes);
+
             appointmentToUpdate.client = client;
             appointmentToUpdate.doctor = doctor;
             appointmentToUpdate.time = time;
-            appointmentToUpdate.date = date;
+            appointmentToUpdate.date = updatedAppointmentDate;
 
             await appointmentToUpdate.save();
         } catch(error) {
@@ -146,7 +189,7 @@ router.delete('/:appointmentId',
 router.get('',
     async (req, res) => {
         try {
-            const appointments = await AppointmentModel.find({});
+            let appointments = await AppointmentModel.find({});
             res.status(200).json({
                 appointments
             });
@@ -164,7 +207,7 @@ router.get('/search',
     ],
     async (req, res) => {
         const validationErrors = validationResult(req);
-        if(!validationResult.isEmpty()) {
+        if(!validationErrors.isEmpty()) {
             return res.status(400).json({
                 errors: validationErrors
             });
@@ -200,3 +243,5 @@ router.get('/search',
         }
     }
 )
+
+module.exports = router;

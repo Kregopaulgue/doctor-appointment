@@ -1,7 +1,7 @@
 const express = require('express');
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
-const jwt = requrie('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -19,7 +19,7 @@ router.post('/signup',
     ],
     async (req, res) => {
         const validationErrors = validationResult(res);
-        if(!validationResult.isEmpty()) {
+        if(!validationErrors.isEmpty()) {
             return res.status(400).json({
                 errors: validationErrors.array()
             });
@@ -53,10 +53,8 @@ router.post('/signup',
 
             jwt.sign(
                 payload, 'secret', { expiresIn: '10000m' }, (error, token) => {
-                    if(error) {
-                        if (error) throw error;
-                        return res.status(200).json({ token });
-                    }
+                    if (error) throw error;
+                    return res.status(200).json({ token });
                 }
             )
         } catch(error) {
@@ -123,3 +121,5 @@ router.post('/login',
         }
     }
 );
+
+module.exports = router;

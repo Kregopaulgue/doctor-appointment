@@ -1,6 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const usersRouter = require('./routes/users.js');
+const timesRouter = require('./routes/times.js');
+const appointmentsRouter = require('./routes/appointments.js');
+
 const { initiateMongoServer } = require('./config/db.js');
 
 initiateMongoServer();
@@ -8,6 +12,10 @@ initiateMongoServer();
 const app = express();
 
 app.use(bodyParser.json());
+
+app.use('/api/users', usersRouter);
+app.use('/api/times', timesRouter);
+app.use('/api/appointments', appointmentsRouter);
 
 if(process.env.NODE_ENV === 'production') {
     app.use(express.static(__dirname + '/public/'));
