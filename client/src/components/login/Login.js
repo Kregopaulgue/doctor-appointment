@@ -31,7 +31,8 @@ class Login extends Component {
         try {
             const response = await usersModelInstance.loginUser(this.state.email, this.state.password);
             console.log(response);
-            UsersModel.setAuthToken(response.token);
+            UsersModel.setAuthToken(response);
+            this.props.history.push('/appointments');
         } catch(error) {
             console.log(error);
         }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Modal, InputGroup, Button } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
 
 import { UsersModel } from '../../services/api/models/users.js';
 
@@ -11,8 +12,29 @@ class Signup extends Component {
             username: '',
             email: '',
             name: '',
-            password: ''
+            password: '',
+            toRedirect: false
         };
+    }
+
+    signupClient = async (event) => {
+        const usersModelInstance = new UsersModel();
+        try {
+            const { username, email, name, password } = this.state;
+            const response = await usersModelInstance.signupUser(
+                username, email, name, password
+            );
+            console.log(response);
+            UsersModel.setAuthToken(response);
+            this.setState({ toRedirect: true });
+        } catch(error) {
+            console.log(error);
+            event.preventDefault();
+        }
+    }
+
+    handleFormChange = (event) => {
+        this.setState({ [event.target.name] : event.target.value });
     }
 
     render() {
@@ -21,6 +43,10 @@ class Signup extends Component {
                 show={this.props.show}
                 onHide={this.props.hideSignUpModal}
             >
+                {
+                    this.state.toRedirect &&
+                    <Redirect to='/appointments'/>
+                }
                 <Modal.Header
                     closeButton
                 >
@@ -111,6 +137,7 @@ class Signup extends Component {
 
                     <Button
                         variant="primary"
+                        onClick={this.signupClient}
                     >
                         Sign Up
                     </Button>

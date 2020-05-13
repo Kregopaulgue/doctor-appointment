@@ -54,7 +54,8 @@ router.post('/signup',
             jwt.sign(
                 payload, 'secret', { expiresIn: '10000m' }, (error, token) => {
                     if (error) throw error;
-                    return res.status(200).json({ token });
+                    payload.token = token;
+                    return res.status(200).json(payload);
                 }
             )
         } catch(error) {
@@ -110,7 +111,8 @@ router.post('/login',
             jwt.sign(
                 payload, 'secret', { expiresIn: '10000m' }, (error, token) => {
                     if (error) throw error;
-                    res.status(200).json({ token });
+                    payload.token = token;
+                    res.status(200).json(payload);
                 }
             );
         } catch(error) {
