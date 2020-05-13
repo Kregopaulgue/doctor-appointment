@@ -8,6 +8,7 @@ export class ApiModel {
     static basePrefix = process.env.APP_BASE_PREFIX || '/api';
 
     static authToken;
+    static currentUserId;
 
     modelBaseUrl;
     modelRequest;
@@ -73,14 +74,19 @@ export class ApiModel {
 
     static setAuthToken(response) {
         ApiModel.authToken = response.token;
+        ApiModel.currentUserId = response.user._id;
         localStorage.setItem('authToken', ApiModel.authToken);
+        localStorage.setItem('currentUserId', ApiModel.currentUserId);
     }
     static clearAuthToken() {
         delete ApiModel.authToken;
+        delete ApiModel.currentUserId;
         localStorage.removeItem('authToken');
+        localStorage.removeItem('currentUserId');
     }
     static loadAuthToken() {
         ApiModel.authToken = localStorage.getItem('authToken');
+        ApiModel.currentUserId = localStorage.getItem('currentUserId');
     }
 
     getModelRequest() {
