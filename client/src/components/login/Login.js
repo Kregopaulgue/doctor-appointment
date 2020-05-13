@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
 
+import Signup from '../signup/Signup';
+
 import { UsersModel } from '../../services/api/models/users.js';
 
 class Login extends Component {
@@ -9,7 +11,9 @@ class Login extends Component {
 
         this.state = {
             email: '',
-            password: ''
+            password: '',
+
+            toShowSignUp: false
         }
     }
 
@@ -17,6 +21,9 @@ class Login extends Component {
         this.setState({ [event.target.name] : event.target.value });
     }
 
+    triggerSignUpModal = () => {
+        this.setState({ toShowSignUp: !this.state.toShowSignUp })
+    }
     login = async (event) => {
         event.preventDefault();
 
@@ -74,6 +81,17 @@ class Login extends Component {
                 >
                     Log In
                 </Button>
+
+                <a
+                    onClick={this.triggerSignUpModal}
+                >
+                    Sign Up
+                </a>
+
+                <Signup 
+                    show={this.state.toShowSignUp}
+                    hideSignUpModal={this.triggerSignUpModal}
+                />
             </div>
         );
     }
