@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import Profile from './Profile.js';
+
 import { AppointmentsModel } from '../../services/api/models/appointments.js';
 
 class Appointments extends Component {
@@ -25,7 +27,7 @@ class Appointments extends Component {
     render() {
         return(
             <div>
-                Test
+                <Profile/>
             </div>
         )
     }

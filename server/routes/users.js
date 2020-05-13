@@ -40,7 +40,7 @@ router.post('/signup',
                 email,
                 password
             });
-            const userRole = RoleModel.find({ role: 'client' });
+            const userRole = await RoleModel.findOne({ role: 'client' });
             newUser.role = userRole._id;
 
             const passwordSalt = bcrypt.genSaltSync(10);
@@ -123,5 +123,24 @@ router.post('/login',
         }
     }
 );
+
+router.get('/:userId',
+    async (req, res) => {
+        try {
+            const user = await UserModel.findById(req.params.userId);
+            if(!user) {
+                return res.status(404).json({
+                    message: 'User is not found'
+                });
+            }
+
+            const payload = { user };
+            return res.status(200).json(payload);
+        } catch(error) {
+            console.log(error);
+            return res.status(500).send('Error while getting user by id');
+        }
+    }
+)
 
 module.exports = router;
