@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const usersRouter = require('./routes/users.js');
 const timesRouter = require('./routes/times.js');
@@ -12,6 +13,7 @@ initiateMongoServer();
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use('/api/users', usersRouter);
 app.use('/api/times', timesRouter);

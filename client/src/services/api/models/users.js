@@ -1,6 +1,6 @@
 import { ApiModel } from '../ApiModel';
 
-class UsersModel extends ApiModel {
+export class UsersModel extends ApiModel {
     constructor(id) {
         super();
 

@@ -1,6 +1,6 @@
 import { ApiModel } from '../ApiModel.js';
 
-class AppointmentsModel extends ApiModel {
+export class AppointmentsModel extends ApiModel {
     constructor(id) {
         super();
 

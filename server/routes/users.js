@@ -40,7 +40,7 @@ router.post('/signup',
                 email,
                 password
             });
-            const userRole = RoleModel.find({ role: 'клиент' });
+            const userRole = RoleModel.find({ role: 'client' });
             newUser.role = userRole._id;
 
             const passwordSalt = bcrypt.genSaltSync(10);

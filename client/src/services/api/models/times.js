@@ -1,6 +1,6 @@
 import { ApiModel } from '../ApiModel.js';
 
-class TimesModel extends ApiModel {
+export class TimesModel extends ApiModel {
     constructor(id) {
         super();
 
