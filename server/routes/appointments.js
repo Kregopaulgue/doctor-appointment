@@ -139,7 +139,7 @@ router.put('/:appointmentId',
             }
 
             let [ hours, minutes ] = timeEntry.split(':');
-            hours = parseInt(hour, 10);
+            hours = parseInt(hours, 10);
             minutes = parseInt(minutes, 10);
 
             const updatedAppointmentDate = new Date(date);
