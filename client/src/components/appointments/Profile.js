@@ -17,6 +17,7 @@ class Profile extends Component {
             const response = await userModelInstance.getUserById();
 
             this.setState({ user: response.user });
+            this.props.setClient(response.user);
         } catch(error) {
             console.log(error);
         }
@@ -28,9 +29,7 @@ class Profile extends Component {
             <div>
                 {
                     this.state.user &&
-                    <ListGroup
-                        className="w-25"
-                    >
+                    <ListGroup>
                         <ListGroup.Item>Name: { user.name }</ListGroup.Item>
                         <ListGroup.Item>Username: { user.username }</ListGroup.Item>
                         <ListGroup.Item>E-mail: { user.email }</ListGroup.Item>

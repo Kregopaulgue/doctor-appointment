@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Table, Form, Button } from 'react-bootstrap';
+import { Table, Form, Button, Badge } from 'react-bootstrap';
 
 import './Appointments.css';
 
@@ -26,6 +26,7 @@ class AvailableAppointments extends Component {
 
             selectedDoctor: null,
             selectedDate: null,
+            selectedWeek: Date.now(),
 
             days: {},
             dayTimes: {},
@@ -37,7 +38,7 @@ class AvailableAppointments extends Component {
     async componentDidMount() {
         await this.loadTimes();
         await this.loadDoctors();
-        this.setWeekDays(Date.now());
+        this.setWeekDays(this.state.selectedWeek);
         await this.loadSearchAppointments();
         this.filterDayTimes();
     }
@@ -158,7 +159,8 @@ class AvailableAppointments extends Component {
             const appointmentsModelInstance = new AppointmentsModel();
             const response = await appointmentsModelInstance.searchAppointments({
                 fromDate: this.state.days.monday.toISOString(),
-                toDate: this.state.days.friday.toISOString()
+                toDate: this.state.days.friday.toISOString(),
+                doctor: this.state.selectedDoctor ? this.state.selectedDoctor._id : undefined 
             });
             this.setState({ appointments: response.appointments || [] });
         } catch(error) {
@@ -204,14 +206,19 @@ class AvailableAppointments extends Component {
         this.setState({ filteredDayTimes });
     }
 
-    createAppointment = async (cell) => {
+    createAppointment = async () => {
+        const selectedTime = this.state.times.find(time => {
+            const timeString = this.state.selectedDate.toISOString().split('T')[1];
+            const pureTimeString = timeString.split(':')[0] + ':' + timeString.split(':')[1];
+            return time.time === pureTimeString;
+        })
         try {
             const appointmentsModelInstance = new AppointmentsModel();
             const response = await appointmentsModelInstance.createAppointment(
-                this.props.client,
-                this.state.doctor,
-                this.state.time,
-                this.state.date
+                this.props.client._id,
+                this.state.selectedDoctor._id,
+                selectedTime._id,
+                this.state.selectedDate.toISOString()
             );
             console.log(response);
         } catch(error) {
@@ -225,27 +232,8 @@ class AvailableAppointments extends Component {
         return (
             <div>
                 <div
-                    className="d-flex flex-row w-50 mt-4"
+                    className="d-flex flex-row mt-4"
                 >
-                    <div
-                        className="pr-2"
-                    >
-                        <Form.Control
-                            as="select"
-                            variant="dark"
-                        >
-                            {
-                                doctors.map(doctor => {
-                                    return <option
-                                        onClick={ () => { this.setState({ selectedDoctor: doctor })} }
-                                    >
-                                        { doctor.name }
-                                    </option>
-                                })
-                            }
-                        </Form.Control>
-                    </div>
-
                     <div
                         className="pr-2"
                     >
@@ -261,6 +249,55 @@ class AvailableAppointments extends Component {
                             variant="dark"
                         >
                             Next Week
+                        </Button>
+                    </div>
+                    <span
+                        className="mb-0 p-2 align-center"
+                    >
+                        Select doctor: 
+                    </span>
+                    <div
+                        className="pr-2"
+                    >
+                        <Form.Control
+                            as="select"
+                            variant="dark"
+                        >
+                            {
+                                doctors.map(doctor => {
+                                    return <option
+                                        onClick={ () => { this.setState({ selectedDoctor: doctor })} }
+                                    >
+                                        { doctor.name } { doctor.speciality }
+                                    </option>
+                                })
+                            }
+                        </Form.Control>
+                    </div>
+                    <div
+                        className="p-2 pl-0 d-flex"
+                    >
+                        <span>
+                            Selected Date:
+                        </span>
+                        <Badge
+                            variant="dark"
+                            className="mx-2"
+                        >
+                            {
+                                this.state.selectedDate ? 
+                                this.state.selectedDate.toISOString() :
+                                'No date is selected'
+                            }
+                        </Badge>
+                    </div>
+                    <div
+                        className="ml-2"
+                    >
+                        <Button
+                            onClick={this.createAppointment}
+                        >
+                            + Add Appointment
                         </Button>
                     </div>
                 </div>
@@ -312,6 +349,7 @@ class AvailableAppointments extends Component {
                                                     {
                                                         Object.values(filteredDayTimes[daykey]).map(dayTime => {
                                                             return <tr
+                                                                className="cursor-pointer"
                                                                 onClick={
                                                                    () => { this.setState({ selectedDate: dayTime })}
                                                                 }
