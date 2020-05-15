@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import { Table } from 'react-bootstrap';
 
+import './Appointments.css';
+
 import { AppointmentsModel } from '../../services/api/models/appointments.js';
 import { UsersModel } from '../../services/api/models/users.js';
 import { TimesModel } from '../../services/api/models/times.js';
@@ -185,7 +187,7 @@ class AvailableAppointments extends Component {
         this.setState({ filteredDayTimes });
     }
 
-    createAppointment = async () => {
+    createAppointment = async (cell) => {
         try {
             const appointmentsModelInstance = new AppointmentsModel();
             const response = await appointmentsModelInstance.createAppointment(
@@ -202,6 +204,7 @@ class AvailableAppointments extends Component {
 
 
     render() {
+        const { days, filteredDayTimes } = this.state;
         return (
             <div>
                 {
@@ -211,33 +214,58 @@ class AvailableAppointments extends Component {
                             <tr>
                                 <th>
                                     <p>Monday</p>
-                                    <p>{this.state.days.monday.toISOString()}</p>
+                                    <p>{days.monday.getDate()}.{days.monday.getMonth() + 1}</p>
                                 </th>
                                 <th>
                                     <p>Tuesday</p>
-                                    <p>{this.state.days.tuesday.toISOString()}</p>
+                                    <p>{days.tuesday.getDate()}.{days.tuesday.getMonth() + 1}</p>
                                 </th>
                                 <th>
                                     <p>Wednesday</p>
-                                    <p>{this.state.days.wednesday.toISOString()}</p>
+                                    <p>{days.wednesday.getDate()}.{days.wednesday.getMonth() + 1}</p>
                                 </th>
                                 <th>
                                     <p>Thursday</p>
-                                    <p>{this.state.days.thursday.toISOString()}</p>
+                                    <p>{days.thursday.getDate()}.{days.thursday.getMonth() + 1}</p>
                                 </th>
                                 <th>
                                     <p>Friday</p>
-                                    <p>{this.state.days.friday.toISOString()}</p>
+                                    <p>{days.friday.getDate()}.{days.friday.getMonth() + 1}</p>
                                 </th>
                             </tr>
                         </thead>
                         {
-                            this.state.appointments.length > 0 &&
+                            !!filteredDayTimes.fridayTimes &&
                             <tbody>
-
+                                <tr>
+                                    {
+                                        Object.keys(filteredDayTimes).map(daykey =>
+                                            <th
+                                                className="p-0"
+                                            >
+                                                <Table
+                                                    variant="dark"
+                                                    striped
+                                                    hover
+                                                >
+                                                    <tbody>
+                                                    {
+                                                        Object.values(filteredDayTimes[daykey]).map(dayTime => {
+                                                            return <tr>
+                                                                {dayTime.getUTCHours()}:{dayTime.getUTCMinutes()}0
+                                                            </tr>
+                                                        })
+                                                    }
+                                                    </tbody>
+                                                </Table>
+                                            </th>
+                                        )
+                                    }
+                                </tr>
                             </tbody>
                         }
                     </Table>
+                    
                 }
             </div>
         );
