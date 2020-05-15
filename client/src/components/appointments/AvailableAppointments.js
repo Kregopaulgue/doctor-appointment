@@ -26,7 +26,7 @@ class AvailableAppointments extends Component {
 
             selectedDoctor: null,
             selectedDate: null,
-            selectedWeek: Date.now(),
+            selectedWeek: new Date(Date.now()),
 
             days: {},
             dayTimes: {},
@@ -38,9 +38,7 @@ class AvailableAppointments extends Component {
     async componentDidMount() {
         await this.loadTimes();
         await this.loadDoctors();
-        this.setWeekDays(this.state.selectedWeek);
-        await this.loadSearchAppointments();
-        this.filterDayTimes();
+        await this.refreshWeekDays();
     }
     loadTimes = async () => {
         try {
@@ -64,8 +62,13 @@ class AvailableAppointments extends Component {
             console.log(error);
         }
     }
+    refreshWeekDays = async (newDate) => {
+        this.setWeekDays(newDate || this.state.selectedWeek);
+        await this.loadSearchAppointments();
+        this.filterDayTimes();
+    }
     setWeekDays = (date) => {
-        const currentDate = new Date(date);
+        const currentDate = new Date(date.toISOString());
         currentDate.setUTCHours(0, 0, 0);
         const currentDay = currentDate.getDay();
 
@@ -162,7 +165,7 @@ class AvailableAppointments extends Component {
                 toDate: this.state.days.friday.toISOString(),
                 doctor: this.state.selectedDoctor ? this.state.selectedDoctor._id : undefined 
             });
-            this.setState({ appointments: response.appointments || [] });
+            await this.setState({ appointments: response.appointments || [] });
         } catch(error) {
             console.log(error);
         }
@@ -220,15 +223,31 @@ class AvailableAppointments extends Component {
                 selectedTime._id,
                 this.state.selectedDate.toISOString()
             );
+            await this.loadSearchAppointments();
+            this.filterDayTimes();
+            this.props.triggerUpdate();
             console.log(response);
         } catch(error) {
             console.log(error);
         }
     }
 
+    //I HATE THIS SHIT ALREADY
+    moveNextWeek = async () => {
+        const newWeekDate = new Date();
+        newWeekDate.setDate(this.state.selectedWeek.getDate() + 7);
+        this.setState({ selectedWeek: newWeekDate }); 
+        await this.refreshWeekDays(newWeekDate);
+    }
+    movePrevWeek = async () => {
+        const newWeekDate = new Date();
+        newWeekDate.setDate(this.state.selectedWeek.getDate() - 7);
+        this.setState({ selectedWeek: newWeekDate });
+        await this.refreshWeekDays(newWeekDate); 
+    }
 
     render() {
-        const { days, filteredDayTimes, doctors, selectedDoctor } = this.state;
+        const { days, filteredDayTimes, doctors, selectedDoctor, setState } = this.state;
         return (
             <div>
                 <div
@@ -239,6 +258,7 @@ class AvailableAppointments extends Component {
                     >
                         <Button
                             variant="dark"
+                            onClick={this.movePrevWeek}
                         >
                             Previous Week
                         </Button>
@@ -247,6 +267,7 @@ class AvailableAppointments extends Component {
                     <div>
                         <Button
                             variant="dark"
+                            onClick={this.moveNextWeek}
                         >
                             Next Week
                         </Button>

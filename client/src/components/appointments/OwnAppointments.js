@@ -15,6 +15,9 @@ class OwnAppointments extends Component {
     async componentDidMount() {
         await this.loadOwnAppointments();
     }
+    async componentDidUpdate() {
+        //FUCK THIS I GO TO VUE
+    }
 
     loadOwnAppointments = async () => {
         try {
@@ -28,11 +31,22 @@ class OwnAppointments extends Component {
             console.log(error);
         }
     }
+    deleteAppointment = async (appointmentId) => {
+        try {
+            const appointmentsModelInstance = new AppointmentsModel(appointmentId);
+            const response = await appointmentsModelInstance.deleteAppointment();
+            console.log(response);
+        } catch(error) {
+            console.log(error);
+        }
+    }
 
     render() {
         const { appointments } = this.state;
         return (
-            <div>
+            <div
+                className="own-appointments-max-height"
+            >
                 {
                     !appointments.length &&
                     <span>
@@ -53,12 +67,17 @@ class OwnAppointments extends Component {
                                 <th>
                                     Дата посещения
                                 </th>
+                                <th>
+
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {
                                 appointments.map(appoint => {
-                                    return <tr>
+                                    return <tr
+                                        key={appoint._id}
+                                    >
                                         <th>
                                             { appoint.doctor }
                                         </th>
@@ -67,6 +86,15 @@ class OwnAppointments extends Component {
                                         </th>
                                         <th>
                                             { appoint.date }
+                                        </th>
+                                        <th
+                                            className="cursor-pointer"
+                                            onClick={async () => {
+                                                await this.deleteAppointment(appoint._id);
+                                                await this.loadOwnAppointments();
+                                            }}
+                                        >
+                                            X
                                         </th>
                                     </tr>
                                 })

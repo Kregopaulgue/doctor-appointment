@@ -11,12 +11,17 @@ class Appointments extends Component {
         super(props);
 
         this.state = {
-            client: null
+            client: null,
+
+            toUpdate: false
         }
     }
 
     setClient = (client) => {
         this.setState({ client });
+    }
+    triggerUpdate = () => {
+        this.setState({ toUpdate: !this.state.toUpdate});
     }
 
     render() {
@@ -37,12 +42,15 @@ class Appointments extends Component {
                         {
                             !!this.state.client &&
                             <OwnAppointments
+                                toUpdate={this.state.toUpdate}
                                 client={this.state.client}/>
                         }
                     </div>
                 </div>
                 
                 <AvailableAppointments
+                    className="appointments-max-height"
+                    triggerUpdate={this.triggerUpdate}
                     client={this.state.client}/>
             </div>
         )
