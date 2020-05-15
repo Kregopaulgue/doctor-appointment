@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 const { UserModel } = require('../models/User.js');
+const { DoctorModel } = require('../models/Doctor.js');
 const { RoleModel } = require('../models/Role.js');
 
 router.post('/signup',
@@ -120,6 +121,37 @@ router.post('/login',
             res.status(500).json({
                 message: 'Error while logging in'
             });
+        }
+    }
+);
+
+router.get('/doctors',
+    async (req, res) => {
+        try {
+            const users = await UserModel.find({});
+            const usersIds = users.map(user => user._id);
+            const doctors = await DoctorModel.find({ user: { $in: usersIds }});
+
+            const doctorUsers = users.map(user => {
+                const userDoctor = doctors.find(doctor => {
+                    return doctor.user.toString() === user._id.toString();
+                });
+                if(userDoctor) {
+                    user.speciality = userDoctor.speciality;
+                    user.doctorId = userDoctor.id;
+                }
+                return user;
+            });
+
+            const finalDoctors = doctorUsers.filter(doctorUser => {
+                return !!doctorUser.doctorId;
+            });
+
+            const payload = { doctors: finalDoctors };
+            res.status(200).json(payload);
+        } catch(error) {
+            console.log(error);
+            return res.status(500).send('Error while loading doctors');
         }
     }
 );

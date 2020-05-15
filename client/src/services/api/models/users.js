@@ -26,6 +26,13 @@ export class UsersModel extends ApiModel {
     async getAllUsers() {
         return await this.get();
     }
+    async getAllDoctors() {
+        const initialModelBaseUrl = this.modelBaseUrl;
+        this.modelBaseUrl += '/doctors';
+        const response = await this.get();
+        this.modelBaseUrl = initialModelBaseUrl;
+        return response;
+    }
     async getUserById() {
         return await this.get();
     }

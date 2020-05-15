@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Table } from 'react-bootstrap';
+import { Table, Form, Button } from 'react-bootstrap';
 
 import './Appointments.css';
 
@@ -22,6 +22,10 @@ class AvailableAppointments extends Component {
             date: null,
 
             appointments: [],
+            doctors: [],
+
+            selectedDoctor: null,
+            selectedDate: null,
 
             days: {},
             dayTimes: {},
@@ -32,6 +36,7 @@ class AvailableAppointments extends Component {
     }
     async componentDidMount() {
         await this.loadTimes();
+        await this.loadDoctors();
         this.setWeekDays(Date.now());
         await this.loadSearchAppointments();
         this.filterDayTimes();
@@ -42,6 +47,18 @@ class AvailableAppointments extends Component {
             const response = await timesModelInstance.getAllTimes();
 
             this.setState({ times: response.times || [] });
+        } catch(error) {
+            console.log(error);
+        }
+    }
+    loadDoctors = async () => {
+        try {
+            const userModelInstance = new UsersModel();
+            const response = await userModelInstance.getAllDoctors();
+            this.setState({ 
+                doctors: response.doctors,
+                selectedDoctor: response.doctors[0] || null
+            });
         } catch(error) {
             console.log(error);
         }
@@ -204,12 +221,55 @@ class AvailableAppointments extends Component {
 
 
     render() {
-        const { days, filteredDayTimes } = this.state;
+        const { days, filteredDayTimes, doctors, selectedDoctor } = this.state;
         return (
             <div>
+                <div
+                    className="d-flex flex-row w-50 mt-4"
+                >
+                    <div
+                        className="pr-2"
+                    >
+                        <Form.Control
+                            as="select"
+                            variant="dark"
+                        >
+                            {
+                                doctors.map(doctor => {
+                                    return <option
+                                        onClick={ () => { this.setState({ selectedDoctor: doctor })} }
+                                    >
+                                        { doctor.name }
+                                    </option>
+                                })
+                            }
+                        </Form.Control>
+                    </div>
+
+                    <div
+                        className="pr-2"
+                    >
+                        <Button
+                            variant="dark"
+                        >
+                            Previous Week
+                        </Button>
+                    </div>
+
+                    <div>
+                        <Button
+                            variant="dark"
+                        >
+                            Next Week
+                        </Button>
+                    </div>
+                </div>
                 {
                     this.state.days.monday &&
-                    <Table>
+                    <Table
+                        variant="dark"
+                        className="mt-2"
+                    >
                         <thead>
                             <tr>
                                 <th>
@@ -251,7 +311,11 @@ class AvailableAppointments extends Component {
                                                     <tbody>
                                                     {
                                                         Object.values(filteredDayTimes[daykey]).map(dayTime => {
-                                                            return <tr>
+                                                            return <tr
+                                                                onClick={
+                                                                   () => { this.setState({ selectedDate: dayTime })}
+                                                                }
+                                                            >
                                                                 {dayTime.getUTCHours()}:{dayTime.getUTCMinutes()}0
                                                             </tr>
                                                         })
@@ -264,8 +328,7 @@ class AvailableAppointments extends Component {
                                 </tr>
                             </tbody>
                         }
-                    </Table>
-                    
+                    </Table>   
                 }
             </div>
         );
