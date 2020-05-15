@@ -61,12 +61,12 @@ router.post('/',
                 });
             }
 
+            const appointmentDate = new Date(date);
+
             let [ hours, minutes ] = timeEntry.time.split(':');
             hours = parseInt(hours, 10);
             minutes = parseInt(minutes, 10);
-            date += ` ${hours}:${minutes}`;
-
-            const appointmentDate = new Date(date);
+            appointmentDate.setUTCHours(hours, minutes);
 
             const newAppointment = new AppointmentModel({
                 client: clientUser._id,

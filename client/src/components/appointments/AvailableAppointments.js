@@ -13,9 +13,11 @@ class AvailableAppointments extends Component {
         this.state = {
             fromDate: null,
             toDate: null,
+
             client: null,
             doctor: null,
             time: null,
+            date: null,
 
             appointments: [],
 
@@ -167,11 +169,37 @@ class AvailableAppointments extends Component {
         });
         filteredDayTimes.thursdayTimes = filteredDayTimes.thursdayTimes.filter((dayTime) => {
             const sameDateAppointment = appointments.find(appoint => {
+                const appointISOString = (new Date(appoint.date)).toISOString();
+                const dayTimeISOString = dayTime.toISOString();
+                const isTheSameDate = appointISOString === dayTimeISOString; 
+                return isTheSameDate;
+            });
+            return !(!!sameDateAppointment); 
+        });
+        filteredDayTimes.fridayTimes = filteredDayTimes.fridayTimes.filter((dayTime) => {
+            const sameDateAppointment = appointments.find(appoint => {
                 return (new Date(appoint.date)).getTime() === dayTime.getTime();
             });
             return !(!!sameDateAppointment); 
         });
+        this.setState({ filteredDayTimes });
     }
+
+    createAppointment = async () => {
+        try {
+            const appointmentsModelInstance = new AppointmentsModel();
+            const response = await appointmentsModelInstance.createAppointment(
+                this.props.client,
+                this.state.doctor,
+                this.state.time,
+                this.state.date
+            );
+            console.log(response);
+        } catch(error) {
+            console.log(error);
+        }
+    }
+
 
     render() {
         return (
