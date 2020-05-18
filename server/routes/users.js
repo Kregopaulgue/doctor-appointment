@@ -141,15 +141,15 @@ router.get('/doctors',
                 const userDoctor = doctors.find(doctor => {
                     return doctor.user.toString() === user._id.toString();
                 });
+                const resultUser = user.toObject();
                 if(userDoctor) {
-                    user.speciality = userDoctor.speciality;
-                    user.doctorId = userDoctor.id;
+                    resultUser.doctor = userDoctor;
                 }
-                return user;
+                return resultUser;
             });
-
+            console.log(doctorUsers);
             const finalDoctors = doctorUsers.filter(doctorUser => {
-                return !!doctorUser.doctorId;
+                return !!doctorUser.doctor;
             });
 
             const payload = { doctors: finalDoctors };

@@ -53,7 +53,9 @@ export default {
         appointments: Array,
 
         fromDate: Date,
-        toDate: Date
+        toDate: Date,
+
+        doctorProfile: Object
     },
     data() {
         return {
@@ -70,6 +72,9 @@ export default {
         this.formatDayTimes();
     },
     watch: {
+        doctorProfile: function() {
+            this.formatDayTimes();
+        },
         fromDate: function() {
             this.formatDayTimes();
         },
@@ -123,7 +128,16 @@ export default {
 
             const dayTimes = {};
             for(let [day, date] of Object.entries(daysOfWeekDates)) {
-                dayTimes[day] = this.times.map(timeEntry => {
+                let currentDayDates = this.times;
+                if(this.doctorProfile) {
+                    currentDayDates = this.times.filter(time => {
+                        return this.doctorProfile.dayTimes[day].find(dayTime => {
+                            return time._id === dayTime;
+                        });
+                    })
+                }
+
+                dayTimes[day] = currentDayDates.map(timeEntry => {
                     let [ hours, minutes ] = timeEntry.time.split(':');
                     hours = parseInt(hours, 10);
                     minutes = parseInt(minutes, 10);

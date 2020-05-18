@@ -48,7 +48,9 @@
             :toDate="toDate"
 
             :times="times"
-            :appointments="appointments"/>
+            :appointments="appointments"
+            
+            :doctorProfile="selectedDoctorProfile"/>
     </div>
 </template>
 
@@ -95,6 +97,12 @@ export default {
             } else {
                 return 'Дата посещения не выбрана...';
             }
+        },
+        selectedDoctorProfile() {
+            const selectedDoctorUser = this.doctors.find(doctor => {
+                return doctor._id === this.selectedDoctor;
+            });
+            return selectedDoctorUser.doctor;
         }
     },
     methods: {
