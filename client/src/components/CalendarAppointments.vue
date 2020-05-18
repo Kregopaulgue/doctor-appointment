@@ -16,6 +16,7 @@
                 :options="doctorsOptions"
                 v-model="selectedDoctor"
                 class="col-2 ml-5"
+                @change="refreshData"
             >
             </b-form-select>
 
@@ -201,6 +202,7 @@ export default {
         },
 
         async refreshData() {
+            console.log('im here');
             this.setFromToDates(this.weekDate);
             await this.loadAppointments();
         }
