@@ -13,29 +13,10 @@
 </template>
 
 <script>
-
-import { UsersModel } from '../services/api/models/users.js';
-
 export default {
     name: "Profile",
-    data() {
-        return {
-            user: null
-        }
-    },
-    async created() {
-        await this.loadUserInfo();
-    },
-    methods: {
-        async loadUserInfo() {
-            try {
-                const userModelInstance = new UsersModel(UsersModel.currentUserId);
-                const response = await userModelInstance.getUserById();
-                this.user = response.user;
-            } catch(error) {
-                console.log(error);
-            }
-        }
+    props: {
+        user: Object
     }
 }
 </script>

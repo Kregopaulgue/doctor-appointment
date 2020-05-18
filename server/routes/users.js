@@ -100,6 +100,11 @@ router.post('/login',
             
             user.role = userRole;
 
+            const userDoctorProfile = await DoctorModel.findOne({ user: user._id});
+            if(userDoctorProfile) {
+                user.doctor = userDoctorProfile;
+            }
+
             const isPasswordMatching = bcrypt.compareSync(password, user.password);
             if(!isPasswordMatching) {
                 return res.status(403).json({
@@ -165,8 +170,9 @@ router.get('/:userId',
                     message: 'User is not found'
                 });
             }
+            const userDoctorProfile = await DoctorModel.findOne({ user: user._id});
 
-            const payload = { user };
+            const payload = { user, doctor: userDoctorProfile };
             return res.status(200).json(payload);
         } catch(error) {
             console.log(error);

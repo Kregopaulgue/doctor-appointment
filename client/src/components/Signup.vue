@@ -3,12 +3,34 @@
         class="w-25 my-auto mx-auto"
     >
         <label>
+            Фамилия Имя Отчество:
+        </label>
+        <b-input
+            type="text"
+            placeholder="ФИО"
+            v-model="name"
+            class="mb-2"
+        >
+        </b-input>
+
+        <label>
+            Имя пользователя:
+        </label>
+        <b-input
+            type="text"
+            placeholder="Имя пользователя"
+            v-model="username"
+            class="mb-2"
+        >
+        </b-input>
+
+        <label>
             E-mail:
         </label>
         <b-input
             type="email"
             placeholder="Электронная почта"
-            v-model="loginEmail"
+            v-model="email"
             class="mb-2"
         >
         </b-input>
@@ -19,7 +41,7 @@
         <b-input
             type="password"
             placeholder="Пароль"
-            v-model="loginPassword"
+            v-model="password"
             class="mb-2"
         >
         </b-input>
@@ -29,16 +51,10 @@
         >
             <b-button
                 variant="primary"
-                @click="login"
-            >
-                Log In
-            </b-button>
-            <a
-                class="ml-2"
-                href="/signup"
+                @click="signup"
             >
                 Sign Up
-            </a>
+            </b-button>
         </div>
     </div>
 </template>
@@ -50,9 +66,6 @@ export default {
     name: "LoginPage",
     data() {
         return {
-            loginEmail: '',
-            loginPassword: '',
-
             username: '',
             email: '',
             name: '',
@@ -60,17 +73,6 @@ export default {
         };
     },
     methods: {
-        async login() {
-            const usersModelInstance = new UsersModel();
-            try {
-                const response = await usersModelInstance.loginUser(this.loginEmail, this.loginPassword);
-                console.log(response);
-                UsersModel.setAuthToken(response);
-                this.$router.history.push('/appointments');
-            } catch(error) {
-                console.log(error);
-            }
-        },
         async signup() {
             const usersModelInstance = new UsersModel();
             try {
