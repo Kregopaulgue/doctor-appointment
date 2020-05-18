@@ -34,3 +34,5 @@ router.put('/:doctorProfileId',
         
     }
 )
+
+module.exports = router;

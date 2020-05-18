@@ -15,6 +15,7 @@
                 v-if="!user.doctor"/>
             <DoctorSchedule
                 v-if="user.doctor"
+                :doctorId="user.doctor._id"
                 :doctorProfile="user.doctor"/>
         </div>
     </div>

@@ -5,6 +5,7 @@ const cors = require('cors');
 const usersRouter = require('./routes/users.js');
 const timesRouter = require('./routes/times.js');
 const appointmentsRouter = require('./routes/appointments.js');
+const doctorsRotuer = require('./routes/doctors.js');
 
 const { initiateMongoServer } = require('./config/db.js');
 
@@ -17,6 +18,7 @@ app.use(cors());
 
 app.use('/api/users', usersRouter);
 app.use('/api/times', timesRouter);
+app.use('/api/doctors', doctorsRotuer);
 app.use('/api/appointments', appointmentsRouter);
 
 if(process.env.NODE_ENV === 'production') {

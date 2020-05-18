@@ -44,12 +44,13 @@
                                 <b-form-select
                                     v-model="selectedTimes[day]"
                                     :options="timesOptions[day]"
+                                    class="mt-3"
                                 >
                                 </b-form-select>
                                 <b-button
                                     variant="success"
                                     @click="addDayTime(day)"
-                                    class="mx-auto"
+                                    class="mt-1"
                                 >
                                     + Time
                                 </b-button>
@@ -138,7 +139,7 @@ export default {
     methods: {
         async deleteDayTime(day, timeIndex) {
             try {
-                delete this.dayTimes[day][timeIndex];
+                this.dayTimes[day].splice(timeIndex, 1);
                 const doctorsModelInstance = new DoctorsModel(this.doctorId);
                 const response = await doctorsModelInstance.updateDoctorProfile({ dayTimes: this.dayTimes });
                 console.log(response);
