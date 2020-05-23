@@ -2,11 +2,6 @@
  * @class
  */
 export class ApiModel {
-    static host = process.env.APP_HOST || 'localhost';
-    static port = process.env.PORT || '5000';
-    static protocol = process.env.APP_PROTOCOL || 'http://';
-    static basePrefix = process.env.APP_BASE_PREFIX || '/api';
-
     static authToken;
     static currentUserId;
 
@@ -27,13 +22,16 @@ export class ApiModel {
     }
 
     _buildUrl() {
-        return `${ApiModel.protocol}${ApiModel.host}${ApiModel.port ? ':' + ApiModel.port : ''}${ApiModel.basePrefix}${this.modelRequest}`;
+        return `/api${this.modelRequest}`;
     }
 
     _buildUrlWithParams(params, insertSlash) {
-        const url = new URL(this.modelBaseUrl + (insertSlash ? '/' : ''));
+        let url = this.modelBaseUrl + (insertSlash ? '/' : '');
         if(params) {
-            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+            url += '?';
+            Object.keys(params).forEach(key => {
+                url += `${key}=${params[key]}&`;
+            });
         }
         return url;
     }
