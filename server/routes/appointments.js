@@ -179,6 +179,16 @@ router.get('',
     async (req, res) => {
         try {
             let appointments = await AppointmentModel.find({});
+            for(let i = 0; i < appointments.length; i++) {
+                const appointmentDoctor = await DoctorModel.findById(appointments[i].doctor);
+                const appointmentDoctorUser = await UserModel.findById(appointmentDoctor.user);
+
+                const clientUser = await UserModel.findById(appointment[i].client);
+
+                appointments[i].doctorProfile = appointmentDoctor;
+                appointments[i].doctorUser = appointmentDoctorUser;
+                appointments[i].clientProfile = clientUser;
+            }
             res.status(200).json({
                 appointments
             });
@@ -224,7 +234,19 @@ router.get('/search',
                 searchObject.time = time;
             }
 
-            const filteredAppointments = await AppointmentModel.find(searchObject);
+            let filteredAppointments = await AppointmentModel.find(searchObject);
+            filteredAppointments = filteredAppointments.map(filteredAppointment => filteredAppointment.toObject());
+
+            for(let i = 0; i < filteredAppointments.length; i++) {
+                const appointmentDoctor = await DoctorModel.findOne({ user: filteredAppointments[i].doctor });
+                const appointmentDoctorUser = await UserModel.findById(appointmentDoctor.user);
+
+                const clientUser = await UserModel.findById(filteredAppointments[i].client);
+
+                filteredAppointments[i].doctorProfile = appointmentDoctor;
+                filteredAppointments[i].doctorUser = appointmentDoctorUser;
+                filteredAppointments[i].clientProfile = clientUser;
+            }
 
             const payload = {
                 appointments: filteredAppointments

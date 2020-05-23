@@ -147,7 +147,7 @@ router.get('/doctors',
                 }
                 return resultUser;
             });
-            console.log(doctorUsers);
+
             const finalDoctors = doctorUsers.filter(doctorUser => {
                 return !!doctorUser.doctor;
             });

@@ -31,10 +31,10 @@
                         {{ index + 1 }}
                     </td>
                     <td>
-                        {{ appointment.doctor }}
+                        {{ appointment.doctorUser.name }}
                     </td>
                     <td>
-                        {{ appointment.doctor }}
+                        {{ appointment.doctorProfile.speciality }}
                     </td>
                     <td>
                         {{ appointment.date }}
