@@ -3,7 +3,7 @@
  */
 export class ApiModel {
     static host = process.env.APP_HOST || 'localhost';
-    static port = process.env.PORT || '7000';
+    static port = process.env.PORT || '5000';
     static protocol = process.env.APP_PROTOCOL || 'http://';
     static basePrefix = process.env.APP_BASE_PREFIX || '/api';
 
