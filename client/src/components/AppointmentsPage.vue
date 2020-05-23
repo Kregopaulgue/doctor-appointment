@@ -1,17 +1,21 @@
 <template>
     <div>
         <div
+            v-if="user"
             class="d-flex"
         >
             <Profile
                 :user="user"/>
-            <OwnAppointments/>
+            <OwnAppointments
+                :refreshTrigger="refreshTrigger"
+                :isDoctor="!!user.doctor"/>
         </div>
 
         <div
             v-if="user"
         >
             <CalendarAppointments
+                @refresh-own-appointments="refreshOwnAppointments"
                 v-if="!user.doctor"/>
             <DoctorSchedule
                 v-if="user.doctor"
@@ -41,7 +45,8 @@ export default {
     },
     data() {
         return {
-            user: null
+            user: null,
+            refreshTrigger: false
         }
     },
     async created() {
@@ -53,10 +58,15 @@ export default {
                 const userModelInstance = new UsersModel(UsersModel.currentUserId);
                 const response = await userModelInstance.getUserById();
                 this.user = response.user;
-                this.user.doctor = response.doctor;
+                if(response.doctor) {
+                    this.user.doctor = response.doctor;
+                }
             } catch(error) {
                 console.log(error);
             }
+        },
+        refreshOwnAppointments() {
+            this.refreshTrigger = !this.refreshTrigger;
         }
     }
 }

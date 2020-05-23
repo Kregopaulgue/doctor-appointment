@@ -196,6 +196,7 @@ export default {
                 );
                 console.log(response);
                 await this.refreshData();
+                this.$emit('refresh-own-appointments');
             } catch(error) {
                 console.log(error);
             }

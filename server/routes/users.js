@@ -172,7 +172,10 @@ router.get('/:userId',
             }
             const userDoctorProfile = await DoctorModel.findOne({ user: user._id});
 
-            const payload = { user, doctor: userDoctorProfile };
+            const payload = { user };
+            if(userDoctorProfile) {
+                payload.doctor = userDoctorProfile;
+            }
             return res.status(200).json(payload);
         } catch(error) {
             console.log(error);
