@@ -68,7 +68,18 @@ export default {
                 UsersModel.setAuthToken(response);
                 this.$router.history.push('/appointments');
             } catch(error) {
-                console.log(error);
+                console.log('im here' + error);
+                let errors = '';
+                if(error.message) {
+                    errors = error.message;
+                }
+                if(error.errors) {
+                    error.errors.forEach(err => {
+                        errors += err.msg + '';
+                    });
+                }
+                console.log(errors);
+                window.alert('Error has occured! Error: ' + errors);
             }
         },
         async signup() {
@@ -82,8 +93,19 @@ export default {
                 UsersModel.setAuthToken(response);
                 this.$router.history.push('/appointments');
             } catch(error) {
-                console.log(error);
+                console.log('im here' + error);
                 event.preventDefault();
+                let errors = '';
+                if(error.message) {
+                    errors = error.message;
+                }
+                if(error.errors) {
+                    error.errors.forEach(err => {
+                        errors += err + '';
+                    });
+                }
+                console.log(errors);
+                window.alert('Error has occured! Error: ' + errors);
             }
         }
     }

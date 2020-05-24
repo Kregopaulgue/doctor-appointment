@@ -53,7 +53,9 @@ export class ApiModel {
                 { status: 'deleted' };
             return json;
         } else {
-            throw response;
+            const json = await response.json();
+            console.log(json);
+            throw json;
         }
     }
 

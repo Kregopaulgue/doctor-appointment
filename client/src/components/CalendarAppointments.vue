@@ -34,6 +34,7 @@
             <b-button
                 variant="primary"
                 @click="submitAppointment"
+                :disabled="!selectedDate || !selectedDoctor"
             >
                 + Записаться на приём
             </b-button>
@@ -94,7 +95,7 @@ export default {
     computed: {
         selectedDateText() {
             if(this.selectedDate) {
-                return this.selectedDate.toISOString(); 
+                return `${this.selectedDate.getUTCDate()}.${this.selectedDate.getUTCMonth() + 1}.20${this.selectedDate.getYear() - 100} ${this.selectedDate.getUTCHours()}:${this.selectedDate.getUTCMinutes()}0`; 
             } else {
                 return 'Дата посещения не выбрана...';
             }
@@ -138,7 +139,18 @@ export default {
                 const response = await timesModelInstance.getllTimes();
                 this.times = response.times;
             } catch(error) {
-                console.log(error);
+                console.log('im here' + error);
+                let errors = '';
+                if(error.message) {
+                    errors = error.message;
+                }
+                if(error.errors) {
+                    error.errors.forEach(err => {
+                        errors += err.msg + '';
+                    });
+                }
+                console.log(errors);
+                window.alert('Error has occured! Error: ' + errors);
             }
         },
         async loadDoctors() {
@@ -154,7 +166,18 @@ export default {
                 });
                 this.selectedDoctor = response.doctors[0]._id || null;
             } catch(error) {
-                console.log(error);
+                console.log('im here' + error);
+                let errors = '';
+                if(error.message) {
+                    errors = error.message;
+                }
+                if(error.errors) {
+                    error.errors.forEach(err => {
+                        errors += err.msg + '';
+                    });
+                }
+                console.log(errors);
+                window.alert('Error has occured! Error: ' + errors);
             }
         },
         async loadAppointments() {
@@ -162,9 +185,6 @@ export default {
             const searchObject = {};
             if(this.fromDate) {
                 searchObject.fromDate = this.fromDate.toISOString();
-            }
-            if(this.toDate) {
-                searchObject.toDate = this.toDate.toISOString();
             }
             if(this.selectedDoctor) {
                 searchObject.doctor = this.selectedDoctor;
@@ -174,19 +194,30 @@ export default {
                 const response = await appointmentsModelInstance.searchAppointments(searchObject);
                 this.appointments = response.appointments;
             } catch(error) {
-                console.log(error);
+                console.log('im here' + error);
+                let errors = '';
+                if(error.message) {
+                    errors = error.message;
+                }
+                if(error.errors) {
+                    error.errors.forEach(err => {
+                        errors += err.msg + '';
+                    });
+                }
+                console.log(errors);
+                window.alert('Error has occured! Error: ' + errors);
             }
         },
 
 
         /** Adds appointment */
         async submitAppointment() {
-            const selectedTime = this.times.find(time => {
-                const timeString = this.selectedDate.toISOString().split('T')[1];
-                const pureTimeString = timeString.split(':')[0] + ':' + timeString.split(':')[1];
-                return time.time === pureTimeString;
-            })
             try {
+                const selectedTime = this.times.find(time => {
+                    const timeString = this.selectedDate.toISOString().split('T')[1];
+                    const pureTimeString = timeString.split(':')[0] + ':' + timeString.split(':')[1];
+                    return time.time === pureTimeString;
+                })
                 const appointmentsModelInstance = new AppointmentsModel();
                 const response = await appointmentsModelInstance.createAppointment(
                     UsersModel.currentUserId,
@@ -198,7 +229,18 @@ export default {
                 await this.refreshData();
                 this.$emit('refresh-own-appointments');
             } catch(error) {
-                console.log(error);
+                console.log('im here' + error);
+                let errors = '';
+                if(error.message) {
+                    errors = error.message;
+                }
+                if(error.errors) {
+                    error.errors.forEach(err => {
+                        errors += err.msg + '';
+                    });
+                }
+                console.log(errors);
+                window.alert('Error has occured! Error: ' + errors);
             }
         },
 

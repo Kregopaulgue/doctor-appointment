@@ -103,7 +103,18 @@ export default {
                 const response = await appointmentsModelInstance.searchAppointments(searchObject);
                 this.appointments = response.appointments;
             } catch(error) {
-                console.log(error);
+                console.log('im here' + error);
+                let errors = '';
+                if(error.message) {
+                    errors = error.message;
+                }
+                if(error.errors) {
+                    error.errors.forEach(err => {
+                        errors += err.msg + '';
+                    });
+                }
+                console.log(errors);
+                window.alert('Error has occured! Error: ' + errors);
             }
         },
         async deleteAppointment(id) {
@@ -118,7 +129,18 @@ export default {
                 console.log(response);
                 await this.loadOwnAppointments();
             } catch(error) {
-                console.log(error);
+                console.log('im here' + error);
+                let errors = '';
+                if(error.message) {
+                    errors = error.message;
+                }
+                if(error.errors) {
+                    error.errors.forEach(err => {
+                        errors += err.msg + '';
+                    });
+                }
+                console.log(errors);
+                window.alert('Error has occured! Error: ' + errors);
             }
         }
     }

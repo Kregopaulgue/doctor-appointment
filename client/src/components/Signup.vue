@@ -76,15 +76,25 @@ export default {
         async signup() {
             const usersModelInstance = new UsersModel();
             try {
-                const { username, email, name, password } = this;
                 const response = await usersModelInstance.signupUser(
-                    username, email, name, password
+                    this.username, this.email, this.name, this.password
                 );
                 console.log(response);
                 UsersModel.setAuthToken(response);
                 this.$router.history.push('/appointments');
             } catch(error) {
-                console.log(error);
+                console.log('im here' + error);
+                let errors = '';
+                if(error.message) {
+                    errors = error.message;
+                }
+                if(error.errors) {
+                    error.errors.forEach(err => {
+                        errors += err.msg + '';
+                    });
+                }
+                console.log(errors);
+                window.alert('Error has occured! Error: ' + errors);
                 event.preventDefault();
             }
         }

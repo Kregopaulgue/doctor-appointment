@@ -11,7 +11,7 @@
             class="ml-auto"
         >
             <b-nav-item href="/signup" class="ml-auto">Регистрация</b-nav-item>
-            <b-nav-item @click="logout">Выход из аккаунта</b-nav-item>
+            <b-nav-item @click="logout" v-if="!isUser">Выход из аккаунта</b-nav-item>
         </b-navbar-nav>
     </b-navbar>
 </template>
@@ -22,6 +22,12 @@ import { ApiModel } from '../services/api/ApiModel.js';
 
 export default {
     name: "Header",
+    computed: {
+        isUser() {
+            console.log(this.$router.currentRoute.path);
+            return this.$router.currentRoute.path === '/login';
+        }
+    },
     methods: {
         logout() {
             ApiModel.clearAuthToken();

@@ -12,7 +12,7 @@ const { RoleModel } = require('../models/Role.js');
 router.post('/signup',
     [
         check('username', 'Invalid username!').not().isEmpty(),
-        check('email', 'Invalid email!').not().isEmpty(),
+        check('email', 'Invalid email!').isEmail(),
         check('name', 'Invalid name!').not().isEmpty(),
         check('password', 'Invalid password! Minimum six symbols').isLength({
             min: 6
@@ -27,6 +27,14 @@ router.post('/signup',
         }
 
         const { username, name, email, password } = req.body;
+        console.log('Ne ponyal');
+        console.log(username);
+        if(!email || !name || !password || !username) {
+            return res.status(400).json({
+                message: 'Invalid input data!'
+            });
+        }
+        
         try {
             const user = await UserModel.findOne({ email });
             if(user) {

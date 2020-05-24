@@ -6,13 +6,33 @@
             <thead
                 class="thead-dark"
             >
-                <tr>
+                <tr
+                    v-if="Object.keys(tableHeaderDays).length"
+                >
                     <th
-                        v-for="day in Object.keys(tableHeaderDays)"
-                        :key="day.toString()"
                         scope="col"
                     >
-                        {{ day.toUpperCase() }} {{ tableHeaderDays[day] }}
+                        Понедельник {{ tableHeaderDays['monday'] }}
+                    </th>
+                    <th
+                        scope="col"
+                    >
+                        Вторник {{ tableHeaderDays['tuesday'] }}
+                    </th>
+                    <th
+                        scope="col"
+                    >
+                        Среда {{ tableHeaderDays['wednesday'] }}
+                    </th>
+                    <th
+                        scope="col"
+                    >
+                        Четверг {{ tableHeaderDays['thursday'] }}
+                    </th>
+                    <th
+                        scope="col"
+                    >
+                        Пятница {{ tableHeaderDays['friday'] }}
                     </th>
                 </tr>
             </thead>
@@ -85,12 +105,13 @@ export default {
     computed: {
         filteredDayTimes() {
             const filteredDayTimes = Object.assign({}, this.dayTimes);
-            console.log(filteredDayTimes);
             for(let day of Object.keys(filteredDayTimes)) {
                 filteredDayTimes[day] = filteredDayTimes[day].filter(dayTime => {
                     return !(this.appointments.find(appoint => {
                         const leftCompareDate = new Date(appoint.date);
-                        const rightCompareDate = new Date(dayTime.toISOString()); 
+                        console.log(leftCompareDate.toISOString());
+                        const rightCompareDate = new Date(dayTime.toISOString());
+                        console.log(rightCompareDate.toISOString());
                         const areDatesEqual = leftCompareDate.getTime() ===
                             rightCompareDate.getTime();
                         return areDatesEqual;
@@ -147,8 +168,6 @@ export default {
                     return dateCopy;
                 }); 
             }
-
-            console.log(dayTimes);
             this.dayTimes = dayTimes;
         }
     }
