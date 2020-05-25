@@ -9,11 +9,29 @@
             >
                 <tr>
                     <th
-                        v-for="day in Object.keys(doctorProfile.dayTimes)"
-                        :key="day.toString()"
                         scope="col"
                     >
-                        {{ day.toUpperCase() }}
+                        Понедельник
+                    </th>
+                    <th
+                        scope="col"
+                    >
+                        Вторник
+                    </th>
+                    <th
+                        scope="col"
+                    >
+                        Среда
+                    </th>
+                    <th
+                        scope="col"
+                    >
+                        Четверг
+                    </th>
+                    <th
+                        scope="col"
+                    >
+                        Пятница
                     </th>
                 </tr>
             </thead>
