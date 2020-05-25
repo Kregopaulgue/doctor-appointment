@@ -155,7 +155,7 @@ export default {
                     });
                 }
                 console.log(errors);
-                window.alert('Error has occured! Error: ' + errors);
+                window.alert('Ошибка:' + errors);
             }
         },
         async addDayTime(day) {
@@ -176,7 +176,7 @@ export default {
                     });
                 }
                 console.log(errors);
-                window.alert('Error has occured! Error: ' + errors);
+                window.alert('Ошибка:' + errors);
             }
         }
     }

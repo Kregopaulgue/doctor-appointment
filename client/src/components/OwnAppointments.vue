@@ -42,7 +42,7 @@
                         {{ !isDoctor ? appointment.doctorProfile.speciality : appointment.clientProfile._id}}
                     </td>
                     <td>
-                        {{ appointment.date }}
+                        {{ `${appointment.date.getUTCDate()}.${appointment.date.getUTCMonth() + 1}.20${appointment.date.getYear() - 100} ${appointment.date.getUTCHours()}:${appointment.date.getUTCMinutes()}0` }}
                     </td>
                     <td
                         v-if="isDoctor"
@@ -101,7 +101,13 @@ export default {
 
             try {
                 const response = await appointmentsModelInstance.searchAppointments(searchObject);
-                this.appointments = response.appointments;
+                this.appointments = response.appointments.map(appoint => {
+                    const ap = {
+                        ...appoint
+                    };
+                    ap.date = new Date(appoint.date);
+                    return ap;
+                });
             } catch(error) {
                 console.log('im here' + error);
                 let errors = '';
@@ -114,7 +120,7 @@ export default {
                     });
                 }
                 console.log(errors);
-                window.alert('Error has occured! Error: ' + errors);
+                window.alert('Ошибка:' + errors);
             }
         },
         async deleteAppointment(id) {
@@ -140,7 +146,7 @@ export default {
                     });
                 }
                 console.log(errors);
-                window.alert('Error has occured! Error: ' + errors);
+                window.alert('Ошибка:' + errors);
             }
         }
     }

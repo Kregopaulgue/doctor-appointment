@@ -14,7 +14,7 @@ router.put('/:doctorProfileId',
             const doctorProfile = await DoctorModel.findById(req.params.doctorProfileId);
             if(!doctorProfile) {
                 return res.status(404).json({
-                    message: 'No doctor with that id is found'
+                    message: 'Доктор не найден'
                 });
             }
 

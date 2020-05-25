@@ -11,10 +11,10 @@ const { RoleModel } = require('../models/Role.js');
 
 router.post('/signup',
     [
-        check('username', 'Invalid username!').not().isEmpty(),
-        check('email', 'Invalid email!').isEmail(),
-        check('name', 'Invalid name!').not().isEmpty(),
-        check('password', 'Invalid password! Minimum six symbols').isLength({
+        check('username', 'Неправильное имя пользователя!').not().isEmpty(),
+        check('email', 'Неправильная почта!').isEmail(),
+        check('name', 'Неправильное имя!').not().isEmpty(),
+        check('password', 'Пароль минимум 6 символов!').isLength({
             min: 6
         })
     ],
@@ -31,7 +31,7 @@ router.post('/signup',
         console.log(username);
         if(!email || !name || !password || !username) {
             return res.status(400).json({
-                message: 'Invalid input data!'
+                message: 'Неправильные данные для регистрации!'
             });
         }
         
@@ -39,7 +39,7 @@ router.post('/signup',
             const user = await UserModel.findOne({ email });
             if(user) {
                 return res.status(400).json({
-                    message: 'User already exists!'
+                    message: 'Пользователь с этой почтой уже существует!'
                 });
             }
 
@@ -69,15 +69,15 @@ router.post('/signup',
             )
         } catch(error) {
             console.log(error);
-            res.status(500).send('Error while saving user');
+            res.status(500).send('Ошибка во время сохранения пользователя');
         }
     }
 )
 
 router.post('/login', 
     [
-        check('email', 'Invalid email!').isEmail(),
-        check('password', 'Invalid password!').isLength({
+        check('email', 'Неправильная почта!').isEmail(),
+        check('password', 'Неправильный пароль!').isLength({
             min: 6
         })
     ],
@@ -95,7 +95,7 @@ router.post('/login',
             const user = await UserModel.findOne({ email });
             if(!user) {
                 res.status(404).json({
-                    message: 'User does not exist!'
+                    message: 'Пользователь не существует!'
                 });
             }
 
@@ -116,7 +116,7 @@ router.post('/login',
             const isPasswordMatching = bcrypt.compareSync(password, user.password);
             if(!isPasswordMatching) {
                 return res.status(403).json({
-                    message: 'Password doesnt match!'
+                    message: 'Пароли не совпадают!'
                 });
             }
 
@@ -132,7 +132,7 @@ router.post('/login',
         } catch(error) {
             console.log(error);
             res.status(500).json({
-                message: 'Error while logging in'
+                message: 'Ошибка во время логинации'
             });
         }
     }

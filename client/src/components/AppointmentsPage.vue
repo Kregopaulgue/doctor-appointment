@@ -73,7 +73,7 @@ export default {
                     });
                 }
                 console.log(errors);
-                window.alert('Error has occured! Error: ' + errors);
+                window.alert('Ошибка:' + errors);
             }
         },
         refreshOwnAppointments() {

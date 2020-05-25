@@ -10,10 +10,10 @@ const { AppointmentModel } = require('../models/Appointment.js');
 
 router.post('/',
     [
-        check('client', 'Invalid client id!').not().isEmpty(),
-        check('doctor', 'Invalid doctor id!').not().isEmpty(),
-        check('time', 'Invalid time id!').not().isEmpty(),
-        check('date', 'Invalid day date!').not().isEmpty(),
+        check('client', 'Неправильный клиент!').not().isEmpty(),
+        check('doctor', 'Неправильный доктор!').not().isEmpty(),
+        check('time', 'Неправильное время!').not().isEmpty(),
+        check('date', 'Неправильная дата!').not().isEmpty(),
     ],
     async (req, res) => {
         const validationErrors = validationResult(req);
@@ -30,34 +30,34 @@ router.post('/',
             const appointment = await AppointmentModel.findOne({ time, date });
             if(appointment) {
                 return res.status(400).json({
-                    message: 'This appointment already exists!'
+                    message: 'Эта запись уже существует!'
                 });
             }
 
             const clientUser = await UserModel.findById(client);
             if(!clientUser) {
                 return res.status(404).json({
-                    message: 'Client with that id is not found!'
+                    message: 'Клиент не найден!'
                 });
             }
 
             const doctorUser = await UserModel.findById(doctor);
             if(!doctorUser) {
                 return res.status(404).json({
-                    message: 'User with that id is not found!'
+                    message: 'Пользователь не найден!'
                 });
             }
             const doctorProfile = await DoctorModel.find({ user: doctorUser._id });
             if(!doctorProfile) {
                 return res.status(404).json({
-                    message: 'Doctor profile for that user is not found!'
+                    message: 'Доктор не найден!'
                 });
             }
 
             const timeEntry = await TimeModel.findById(time);
             if(!timeEntry) {
                 return res.status(404).json({
-                    message: 'Time with that id doesn\'t exist'
+                    message: 'Время с этим кодом не найдено'
                 });
             }
 
@@ -81,7 +81,7 @@ router.post('/',
             return res.status(200).json(payload);
         } catch(error) {
             console.log(error);
-            return res.status(500).send('Error while creating appointment');
+            return res.status(500).send('Ошибка во время создания записи');
         }
     }
 );
@@ -107,34 +107,34 @@ router.put('/:appointmentId',
             const appointmentToUpdate = await AppointmentModel.findById(req.params.appointmentId);
             if(!appointmentToUpdate) {
                 return res.status(404).json({
-                    message: 'Appointment is not found'
+                    message: 'Запись не найдена!'
                 });
             }
 
             const clientUser = await UserModel.findById(client);
             if(!clientUser) {
                 return res.status(404).json({
-                    message: 'Client with that id is not found!'
+                    message: 'Клиент не найден!'
                 });
             }
 
             const doctorUser = await UserModel.findById(doctor);
             if(!doctorUser) {
                 return res.status(404).json({
-                    message: 'User with that id is not found!'
+                    message: 'Клиент не найден!'
                 });
             }
             const doctorProfile = await DoctorModel.find({ user: doctorUser._id });
             if(!doctorProfile) {
                 return res.status(404).json({
-                    message: 'Doctor profile for that user is not found!'
+                    message: 'Профиль доктора не найден!'
                 });
             }
 
             const timeEntry = await TimeModel.findById(time);
             if(!timeEntry) {
                 return res.status(404).json({
-                    message: 'Time with that id doesn\'t exist'
+                    message: 'Время с этим кодот не найдено'
                 });
             }
 
@@ -154,7 +154,7 @@ router.put('/:appointmentId',
             await appointmentToUpdate.save();
         } catch(error) {
             console.log(error);
-            return res.status(500).send('Error while updating appointment')
+            return res.status(500).send('Ошибка во время редактирования записи')
         }
     }
 );
@@ -165,12 +165,12 @@ router.delete('/:appointmentId',
             const appointmentToDelete = await AppointmentModel.findByIdAndRemove(req.params.appointmentId);
             if(!appointmentToDelete) {
                 return res.status(404).json({
-                    message: 'Appointment is not found'
+                    message: 'Посещение не найдено!'
                 });
             }
         } catch(error) {
             console.log(error);
-            return res.status(500).send('Error while updating appointment')
+            return res.status(500).send('Ошибка во время удаление записи')
         }
     }
 );
@@ -194,7 +194,7 @@ router.get('',
             });
         } catch(error) {
             console.log(error);
-            return res.status(500).send('Error while listing appointments');
+            return res.status(500).send('Ошибка во время листинга запросов');
         }
     }
 );
@@ -210,7 +210,7 @@ router.get('/search',
             });
             if(invalidParam) {
                 return res.status(400).json({
-                    message: 'Invalid query parameters'
+                    message: 'Неверные параметры запроса'
                 });
             }
 
@@ -254,7 +254,7 @@ router.get('/search',
             return res.status(200).json(payload);
         } catch(error) {
             console.log(error);
-            return res.status(500).send('Error while quering appointments');
+            return res.status(500).send('Ошибка во время загрузки записей');
         }
     }
 )

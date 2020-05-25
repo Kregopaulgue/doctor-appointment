@@ -14,7 +14,7 @@ router.get('',
             return res.status(200).json(payload);
         } catch(error) {
             console.log(error);
-            return res.status(500).send('Error while loading times');
+            return res.status(500).send('Ошибка во время загрузки времени');
         }
     }
 )
