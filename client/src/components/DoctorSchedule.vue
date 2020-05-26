@@ -70,7 +70,7 @@
                                     @click="addDayTime(day)"
                                     class="mt-1"
                                 >
-                                    + Time
+                                    + Время Посещения
                                 </b-button>
                             </tr>
                         </tbody>

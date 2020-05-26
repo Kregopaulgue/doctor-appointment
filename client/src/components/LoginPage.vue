@@ -31,13 +31,13 @@
                 variant="primary"
                 @click="login"
             >
-                Log In
+                Войти
             </b-button>
             <a
                 class="ml-2"
                 href="/signup"
             >
-                Sign Up
+                Зарегистрироваться
             </a>
         </div>
     </div>

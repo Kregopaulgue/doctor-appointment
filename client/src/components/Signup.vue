@@ -53,7 +53,7 @@
                 variant="primary"
                 @click="signup"
             >
-                Sign Up
+                Зарегистрироваться
             </b-button>
         </div>
     </div>

@@ -2,6 +2,9 @@
     <div
         class="p-4"
     >
+        <h5>
+            Текущие записи на приём
+        </h5>
         <table
             class="table own-appoints-max-height"
         >

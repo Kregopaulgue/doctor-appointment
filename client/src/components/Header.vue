@@ -11,7 +11,7 @@
             class="ml-auto"
         >
             <b-nav-item href="/signup" class="ml-auto">Регистрация</b-nav-item>
-            <b-nav-item @click="logout" v-if="!isUser">Выход из аккаунта</b-nav-item>
+            <b-nav-item @click="logout" v-if="!isUser">Вход/Выход из аккаунта</b-nav-item>
         </b-navbar-nav>
     </b-navbar>
 </template>
